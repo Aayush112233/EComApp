@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import {
   Box,
   Card,
@@ -23,10 +23,15 @@ import RemoveIcon from "@mui/icons-material/Remove";
 import AddIcon from "@mui/icons-material/Add";
 import { CartProduct } from "../Component/cart";
 import { ToastContainer, toast } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
+import "react-toastify/dist/ReactToastify.css";
+import SimpleImageSlider from "react-simple-image-slider";
+import men from "../assets/images/slider1.jpg"
+import summer from "../assets/images/headphones.jpg"
+import vegetable from "../assets/images/Vegetable.jpg"
+import watch from "../assets/images/Watch.jpg"
+export const Product = () => {
+  const { state } = useLocation();
 
-export const Product = (props) => {
-  console.log("The data", props)
   const [data, setData] = useState([]);
   const [open, setOpen] = React.useState(false);
   const [shopopen, setShopOpen] = React.useState(false);
@@ -34,6 +39,20 @@ export const Product = (props) => {
   const [mainCart, setMainCart] = useState([]);
   const [quantity, setQuantity] = useState(1);
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const [isLoggedIn, setLogIn] = useState(false);
+  const images = [
+    { url: summer },
+    { url: men },
+    { url: watch },
+    { url: vegetable }
+  ];
+  useEffect(() => {
+    state ? setLogIn(state.logged) : console.log("No data");
+  }, [isLoggedIn]);
+
+  console.log("The islogged in status is ", isLoggedIn);
+
+  console.log("The logged in status is", isLoggedIn);
   const style = {
     position: "absolute",
     top: "50%",
@@ -52,20 +71,22 @@ export const Product = (props) => {
   };
 
   const handleCart = (carditem) => {
-    setShopOpen(true);
-    setProduct(carditem);
-    
+    if (isLoggedIn === true) {
+      setShopOpen(true);
+      setProduct(carditem);
+    } else {
+      toast.error("You need to log in first!");
+    }
   };
 
-
-  const addCard = (data) => {     
-    setMainCart([...mainCart, {...data, quantity}])
-    setQuantity(0)
+  const addCard = (data) => {
+    setMainCart([...mainCart, { ...data, quantity }]);
+    setQuantity(0);
     setShopOpen(false);
-    toast.success("Item added successfully!")
-  }
+    toast.success("Item added successfully!");
+  };
 
-  console.log("The cart to be added is", mainCart)
+  console.log("The cart to be added is", mainCart);
 
   const handleClose = () => {
     setAnchorEl(null);
@@ -99,9 +120,7 @@ export const Product = (props) => {
   console.log("Data from API: ", data);
   return (
     <>
-    <ToastContainer>
-      
-    </ToastContainer>
+      <ToastContainer></ToastContainer>
       <Toolbar
         sx={{ display: "flex", justifyContent: "space-between", boxShadow: 3 }}
       >
@@ -147,27 +166,44 @@ export const Product = (props) => {
           open={Boolean(anchorEl)}
           onClose={handleClose}
         >
-          <MenuItem component={Link} to="/login">
-            Sign In
-          </MenuItem>
+          {isLoggedIn ? (
+            <MenuItem component={Link} to="/login">
+              {" "}
+              Sign Out{" "}
+            </MenuItem>
+          ) : (
+            <MenuItem component={Link} to="/login">
+              {" "}
+              Sign In{" "}
+            </MenuItem>
+          )}
         </Menu>
       </Toolbar>
+      <SimpleImageSlider
+        width="100%"
+        height={600}
+        images={images}
+        showBullets={true}
+        showNavs={true}
+        slideDuration={1}
+        autoPlay={true}
+      />
       <h1 style={{ textAlign: "center", fontSize: "50px" }}> Our Products </h1>
       <Box
         sx={{
           gap: "20px",
           display: "grid",
-          width: "100vw",
+          width: "100%",
           justifyContent: "space-around",
-          marginTop: "100px",
-          gridTemplateColumns: "auto auto auto",
+          marginTop: "100px",          
+          gridTemplateColumns: "auto auto auto auto",
         }}
       >
         {data.map((carditem) => (
-          <Card key={carditem.id} sx={{ maxWidth: 345 }}>
+          <Card key={carditem.id} sx={{ height:'300px' }}>
             <CardMedia
               component="img"
-              height="140"
+              height="200"
               image={carditem.images ? carditem.images[0] : "no image found"}
             />
             <CardContent>
@@ -210,6 +246,7 @@ export const Product = (props) => {
         >
           <Box sx={style}>
             {[product].map((data) => (
+              
               <>
                 <Grid sx={{ display: "flex" }}>
                   <Box>
@@ -262,7 +299,9 @@ export const Product = (props) => {
                 <Button
                   variant="contained"
                   sx={{ background: "black", marginRight: "20px" }}
-                  onClick={()=>{addCard(data)}}
+                  onClick={() => {
+                    addCard(data);
+                  }}
                 >
                   Add to Cart
                 </Button>

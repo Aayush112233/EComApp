@@ -18,8 +18,7 @@ export const LoginPage = () => {
     handleSubmit,
     formState: { errors },
   } = useForm(); //form validation
-  let navigate = useNavigate();
-  const [isLoggedIn, setLoggin] = useState(false)
+  let navigate = useNavigate();  
   const [values, setValues] = useState({
     email: "",
     password: "",
@@ -43,8 +42,10 @@ export const LoginPage = () => {
         localStorage.setItem('items', res.data.token)
         
         if (res.data.role === "user") {
-          setLoggin(true)
-          navigate("/", data={isLoggedIn});
+          
+          navigate("/",{
+            state:{logged:true}
+          });
         } else if (res.data.role === "admin") {
           navigate("/dashboard");
         } else {
@@ -92,17 +93,17 @@ export const LoginPage = () => {
         justifyContent="center"
         alignItems="center"
         height="100vh"
-        sx={{ backgroundColor: "grey" }}
+        sx={{ backgroundColor: "#F2D388" }}
       >
         <Card
           variant="outlined"
           sx={{
-            maxWidth: "400px",
+            minWidth: "400px",
             height: "450px",
             p: 2,
             borderRadius:'10px',
             overflow: "visible",
-            background: "#d0d0d0",
+            background: "#874C62",
           }}
         >
           <Box
@@ -111,7 +112,7 @@ export const LoginPage = () => {
               flexDirection: "column",
               gap: 2,
               p: 2,
-              color: "blue",
+              color: "#F2D388",
             }}
           >
             <Typography
@@ -139,7 +140,7 @@ export const LoginPage = () => {
                 })}
                 onChange={handleChange("email")}
                 variant="outlined"
-                InputProps={{
+                InputProps={{                  
                   endAdornment: (
                     <InputAdornment position="end">
                       <EmailRoundedIcon sx={{ mr: 1 }} />
@@ -192,23 +193,20 @@ export const LoginPage = () => {
                 type="submit"
                 onClick={handleSubmit(onSubmit)}
                 variant="outlined"
-                sx={{ width: "30%" }}
+                sx={{ width: "30%",
+                backgroundColor:'#F2D388',
+                border:'none',
+                color:'#874C62'
+              }}
+                
               >
                 Sign In
               </Button>
             </FormControl>
 
-            <Button
-              sx={{
-                mt: "20px",
-                px: 1,
-                width: "100%",
-                color: "red",
-                p: 1,
-              }}
-            >
-              <Link to="/register">Don't Have An Account? </Link>
-            </Button>
+            <div style={{width:'100%' , textAlign:'center', marginTop:'30px'}}>
+              <Link style={{textDecoration:'none'}}to="/register"><p style={{color:'#F2D388', fontFamily:'arial', fontSize:'20px'}}>Don't Have an Account?</p> </Link>
+            </div>
           </Box>
         </Card>
       </Box>

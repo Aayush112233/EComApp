@@ -26,7 +26,7 @@ export const Products = () => {
   const [add, setAdd] = React.useState(false);
   const [user, setUser] = React.useState();
   const handleClose = () => setOpen(false);
-
+  const [query, setQuery] = useState("");
   const style = {
     position: "absolute",
     top: "50%",
@@ -112,6 +112,15 @@ export const Products = () => {
             }
           />
           {add ? <AddProduct /> : console.log("nothing to show")}
+          <input
+              className="search"
+              type="text"
+              style={{
+                  
+              }}
+              placeholder="search here"
+              onChange={(e) => setQuery(e.target.value)}
+            ></input>
           <TableContainer
             component={Paper}
             sx={{ maxWidth: '90%', maxHeight: "400px", marginTop: "20px" }}
@@ -127,7 +136,7 @@ export const Products = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {data.map((row) => (
+                {data.filter((prod)=>prod.title.includes(query)).map((row) => (
                   <TableRow
                     sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                     key={row.id}

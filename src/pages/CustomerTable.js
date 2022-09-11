@@ -1,4 +1,4 @@
-import { Button} from "@mui/material";
+import { Button } from "@mui/material";
 import { Box } from "@mui/system";
 import * as React from "react";
 import Table from "@mui/material/Table";
@@ -17,12 +17,14 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import AddCustomer from "../Component/CustomerAddForm";
 import FormCustomer from "../Component/CustomerEditForm";
 import Layout from "../Layout/adminDashboard";
+import "../assets/CustomerTable.css"
 
 export const Customer = () => {
   const [data, setData] = useState([]);
   const [open, setOpen] = React.useState(false);
   const [user, setUser] = React.useState();
   const [add, setAdd] = React.useState(false);
+  const [query, setQuery] = useState("");
   const handleClose = () => setOpen(false);
 
   const style = {
@@ -49,14 +51,14 @@ export const Customer = () => {
   }, []);
   console.log(data);
 
-  function handleEdit(row) {    
+  function handleEdit(row) {
     console.log("The data of the employee: ", row);
     setOpen(true);
     setUser(row);
   }
 
-  const handleDelete = (id) => {
-    axios
+  const handleDelete = async (id) => {
+    await axios
       .delete(`http://localhost:3002/users/${id}`)
       .then(function (response) {
         console.log(response);
@@ -65,10 +67,12 @@ export const Customer = () => {
         console.log(error);
       });
   };
+  console.log("The data comming ", data);
+ 
 
   return (
     <Layout>
-      <>        
+      <>
         <Box
           sx={{
             position: "relative",
@@ -114,9 +118,23 @@ export const Customer = () => {
               }
             />
             {add ? <AddCustomer /> : console.log("nothing to show")}
+            <input
+              className="search"
+              type="text"
+              style={{
+                  
+              }}
+              placeholder="search here"
+              onChange={(e) => setQuery(e.target.value)}
+            ></input>
             <TableContainer
               component={Paper}
-              sx={{ maxWidth: "100%", maxHeight: "500px", marginTop: "20px", position:"relative" }}
+              sx={{
+                maxWidth: "100%",
+                maxHeight: "500px",
+                marginTop: "20px",
+                position: "relative",
+              }}
             >
               <Table sx={{ minWidth: 650 }} aria-label="simple table">
                 <TableHead sx={{ backgroundColor: "#adadad" }}>
@@ -131,33 +149,37 @@ export const Customer = () => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {data.map((row) => (
-                    <TableRow
-                      sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                      key={row.id}
-                    >
-                      <TableCell align="center">{row.id}</TableCell>
-                      <TableCell align="center">
-                        {row.firstName} {row.lastName}{" "}
-                      </TableCell>
-                      <TableCell align="center">{row.email}</TableCell>
-                      <TableCell align="center">{row.address.city}</TableCell>
-                      <TableCell align="center">{row.phone}</TableCell>
-                      <TableCell align="center">{row.gender}</TableCell>
-                      <TableCell align="center">
-                        <EditIcon
-                          sx={{ cursor: "pointer", marginRight: "10px" }}
-                          onClick={() => handleEdit(row)}
-                        />
-                        <DeleteIcon
-                          sx={{ cursor: "pointer" }}
-                          onClick={() => {
-                            handleDelete(row.id);
-                          }}
-                        />
-                      </TableCell>
-                    </TableRow>
-                  ))}
+                  {data
+                    .filter((user) => user.firstName.includes(query))
+                    .map((row) => (
+                      <TableRow
+                        sx={{
+                          "&:last-child td, &:last-child th": { border: 0 },
+                        }}
+                        key={row.id}
+                      >
+                        <TableCell align="center">{row.id}</TableCell>
+                        <TableCell align="center">
+                          {row.firstName} {row.lastName}{" "}
+                        </TableCell>
+                        <TableCell align="center">{row.email}</TableCell>
+                        <TableCell align="center">{row.address.city}</TableCell>
+                        <TableCell align="center">{row.phone}</TableCell>
+                        <TableCell align="center">{row.gender}</TableCell>
+                        <TableCell align="center">
+                          <EditIcon
+                            sx={{ cursor: "pointer", marginRight: "10px" }}
+                            onClick={() => handleEdit(row)}
+                          />
+                          <DeleteIcon
+                            sx={{ cursor: "pointer" }}
+                            onClick={() => {
+                              handleDelete(row.id);
+                            }}
+                          />
+                        </TableCell>
+                      </TableRow>
+                    ))}
                 </TableBody>
               </Table>
             </TableContainer>

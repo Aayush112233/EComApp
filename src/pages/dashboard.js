@@ -8,9 +8,12 @@ import Typography from "@mui/material/Typography";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
+
+
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 export const DashBoard = () => {
+  
   const [user, setUser] = useState([]);
   const [product, setProduct] = useState([]);
   useEffect(() => {
@@ -42,7 +45,7 @@ export const DashBoard = () => {
       female.push(user[i]);
     }
   }
-  console.log("The females are",female);
+  console.log("The females are", female);
 
   let male = [];
   for (let i = 0; i < user.length; i++) {
@@ -50,7 +53,7 @@ export const DashBoard = () => {
       male.push(user[i]);
     }
   }
-  console.log("The males are",male);
+  console.log("The males are", male);
 
   let other = [];
   for (let i = 0; i < user.length; i++) {
@@ -58,8 +61,7 @@ export const DashBoard = () => {
       other.push(user[i]);
     }
   }
-  console.log("The other are",other);
-
+  console.log("The other are", other);
 
   const Number = user.length;
   console.log("number data", Number);
@@ -71,7 +73,7 @@ export const DashBoard = () => {
     datasets: [
       {
         labels: "genders",
-        data: [male.length,female.length, other.length ],
+        data: [male.length, female.length, other.length],
         backgroundColor: [
           "rgba(255, 99, 132, 0.2)",
           "rgba(54, 162, 235, 0.2)",
@@ -95,6 +97,7 @@ export const DashBoard = () => {
         </Box>
 
         <Box sx={{ top: "100px", position: "relative", width: "100%" }}>
+          
           <Box
             sx={{
               display: "flex",
